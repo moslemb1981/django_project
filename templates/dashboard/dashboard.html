@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>داشبورد</h3>
+<div class="row g-3">
+  <div class="col-md-4">
+    <div class="card text-dark">
+      <div class="card-body">
+        <h6 class="card-title">میانگین امتیاز</h6>
+        <h2>{{ avg_score }}</h2>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-body">
+        <h6 class="card-title">تعداد ارزیابی‌ها</h6>
+        <h2>{{ total_evals }}</h2>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card mt-4">
+  <div class="card-body">
+    <h5 class="card-title">روند امتیازات (6 ماه اخیر)</h5>
+    <canvas id="scoreChart" height="120"></canvas>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const labels = {{ chart_labels|safe }};
+const data = {{ chart_data|safe }};
+const ctx = document.getElementById('scoreChart').getContext('2d');
+new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: labels,
+        datasets: [{
+            label: 'میانگین امتیاز',
+            data: data,
+            tension: 0.3,
+            fill: false,
+            borderWidth: 2,
+        }]
+    },
+    options: { responsive: true, maintainAspectRatio: false }
+});
+</script>
+{% endblock %}

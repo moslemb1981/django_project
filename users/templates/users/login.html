@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-center align-items-center" style="height: 70vh;">
+    <div class="card shadow-lg" style="width: 400px; border-radius: 20px;">
+        <div class="card-body">
+            <h3 class="text-center mb-4">ورود به سیستم ارزیابی عملکرد</h3>
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label">نام کاربری</label>
+                    <input type="text" name="username" class="form-control" placeholder="Username" required autofocus>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">رمز عبور</label>
+                    <input type="password" name="password" class="form-control" placeholder="Password" required>
+                </div>
+                {% if form.errors %}
+                    <div class="alert alert-danger text-center">
+                        نام کاربری یا رمز عبور اشتباه است.
+                    </div>
+                {% endif %}
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">ورود</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

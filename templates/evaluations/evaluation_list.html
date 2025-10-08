@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>ارزیابی‌ها</h3>
+<a class="btn btn-success mb-3" href="{% url 'evaluations:add' %}">ثبت ارزیابی جدید</a>
+<table class="table table-striped">
+  <thead><tr><th>کارمند</th><th>امتیاز</th><th>تاریخ</th><th>اقدامات</th></tr></thead>
+  <tbody>
+    {% for ev in evaluations %}
+      <tr>
+        <td>{{ ev.employee.get_full_name|default:ev.employee.username }}</td>
+        <td>{{ ev.score }}</td>
+        <td>{{ ev.date }}</td>
+        <td>
+          <a href="{% url 'evaluations:edit' ev.pk %}" class="btn btn-sm btn-primary">ویرایش</a>
+          <form method="post" action="{% url 'evaluations:delete' ev.pk %}" style="display:inline">
+            {% csrf_token %}
+            <button class="btn btn-sm btn-danger" onclick="return confirm('مطمئنی؟')">حذف</button>
+          </form>
+        </td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="4">هیچ ارزیابی ثبت نشده است.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

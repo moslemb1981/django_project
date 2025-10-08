@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4 text-center">ورود داده‌های شاخص‌ها - {{ month }}/{{ year }}</h2>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show text-center" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% if editable %}
+        <div class="alert alert-success text-center">
+            <strong>ماه فعال:</strong> شما می‌توانید اطلاعات شاخص‌های خود را برای این ماه ثبت یا ویرایش کنید.
+        </div>
+    {% else %}
+        <div class="alert alert-warning text-center">
+            <strong>توجه:</strong> در حال حاضر هیچ ماه فعالی برای ورود اطلاعات وجود ندارد.
+            داده‌ها فقط قابل مشاهده هستند.
+        </div>
+    {% endif %}
+
+    {% if form_data %}
+    <form method="post">
+        {% csrf_token %}
+        <table class="table table-striped table-bordered align-middle text-center">
+            <thead class="table-light">
+                <tr>
+                    <th style="width: 15%;">کد شاخص</th>
+                    <th style="width: 25%;">نام شاخص</th>
+                    <th style="width: 10%;">واحد</th>
+                    <th style="width: 15%;">هدف ماه</th>
+                    <th style="width: 15%;">مقدار واقعی</th>
+                    <th style="width: 20%;">درصد تحقق</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in form_data %}  <!-- تغییر از forms به form_data -->
+                    <tr>
+                        <td>{{ item.indicator.code }}</td>
+                        <td>{{ item.indicator.name }}</td>
+                        <td>{{ item.indicator.get_unit_display }}</td>
+                        <td>
+                            {% if item.target %}
+                                {{ item.target }}
+                            {% else %}
+                                <span class="text-muted">—</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if editable %}
+                                {{ item.form.value }}
+                            {% else %}
+                                <input type="text" value="{{ item.form.instance.value|default_if_none:'' }}" class="form-control text-center" disabled>
+                            {% endif %}
+                            {{ item.form.indicator }}
+                            {{ item.form.month }}
+                            {{ item.form.year }}
+                        </td>
+                        <td>
+                            {% if item.percent %}
+                                {{ item.percent }}٪
+                            {% else %}
+                                <span class="text-muted">—</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-muted">هیچ شاخصی برای شما ثبت نشده است.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% if editable %}
+            <div class="text-center mt-3">
+                <button type="submit" class="btn btn-success px-4">💾 ذخیره اطلاعات</button>
+            </div>
+        {% endif %}
+    </form>
+    {% else %}
+    <div class="alert alert-info text-center">
+        <h5>هیچ شاخصی برای نمایش وجود ندارد</h5>
+        <p>لطفاً با مدیر سیستم تماس بگیرید تا شاخص‌های مربوط به شما را تعریف کند.</p>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.form-control {
+    text-align: center !important;
+    direction: ltr !important;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.form-control:disabled {
+    text-align: center !important;
+    direction: ltr !important;
+}
+</style>
+{% endblock %}

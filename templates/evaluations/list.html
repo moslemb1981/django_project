@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>لیست ارزیابی‌ها</h2>
+<table class="table table-bordered">
+    <tr><th>کارمند</th><th>امتیاز</th><th>تاریخ</th><th>توضیحات</th></tr>
+    {% for eval in evaluations %}
+    <tr>
+        <td>{{ eval.employee.username }}</td>
+        <td>{{ eval.score }}</td>
+        <td>{{ eval.date }}</td>
+        <td>{{ eval.notes }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="4">هیچ ارزیابی ثبت نشده است</td></tr>
+    {% endfor %}
+</table>
+{% endblock %}

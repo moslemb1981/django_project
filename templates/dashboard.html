@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>داشبورد</h2>
+    <hr>
+
+    <div class="alert alert-info">
+        <strong>👋 خوش آمدید {{ user.username }}</strong>
+    </div>
+
+    {% if active_month %}
+        <p>📅 ماه فعال برای ورود اطلاعات:
+            <strong>{{ active_month }}</strong>
+        </p>
+    {% else %}
+        <p class="text-danger">❌ در حال حاضر هیچ ماه فعالی تنظیم نشده است.</p>
+    {% endif %}
+
+    <p>📊 تعداد شاخص‌های شما: <strong>{{ indicators_count }}</strong></p>
+
+    <a href="{% url 'indicators:monthly_data' %}" class="btn btn-primary">
+        ورود داده‌های شاخص‌ها
+    </a>
+</div>
+{% endblock %}
