@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% load static %}
+{% load custom_filters %}
+{% block content %}
+
+<div class="container-fluid mt-4">
+    <h2 class="text-center mb-4">📊 داشبورد مدیریتی شاخص‌ها</h2>
+    <p class="text-center text-muted">
+        سال جاری شمسی: <strong>{{ year }}</strong> &nbsp;|&nbsp;
+        تاریخ امروز: <strong>{{ now }}</strong>
+    </p>
+
+    <!-- فرم فیلتر -->
+    <form method="get" class="row justify-content-center mb-4">
+        <div class="col-md-3">
+            <select name="owner" class="form-select" onchange="this.form.submit()">
+                <option value="">🔹 همه مالکان</option>
+                {% for owner in owners %}
+                    <option value="{{ owner.id }}" {% if selected_owner_id == owner.id|stringformat:"s" %}selected{% endif %}>
+                        {{ owner.get_full_name|default:owner.username }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <select name="month" class="form-select" onchange="this.form.submit()">
+                <option value="">🔹 همه ماه‌ها</option>
+                {% for num, name in month_choices %}
+                    <option value="{{ num }}" {% if selected_month|stringformat:"s" == num|stringformat:"s" %}selected{% endif %}>{{ name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </form>
+
+    <!-- کارت‌های خلاصه -->
+    <div class="row text-center mb-4">
+        <div class="col-md-3">
+            <div class="card shadow-sm p-3 border-success border-2">
+                <h5>میانگین درصد تحقق</h5>
+                <h3 class="text-success fw-bold">{{ avg_percent }}%</h3>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm p-3 border-primary border-2">
+                <h5>تعداد شاخص‌ها</h5>
+                <h3 class="text-primary fw-bold">{{ total_indicators }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- جدول شاخص‌ها -->
+    <div class="card shadow p-4">
+        <h4 class="mb-3">📋 جزئیات شاخص‌ها</h4>
+        <table class="table table-bordered align-middle text-center">
+            <thead class="table-light">
+                <tr>
+                    <th>کد شاخص</th>
+                    <th>نام شاخص</th>
+                    <th>واحد</th>
+                    <th>هدف ماه</th>
+                    <th>مقدار واقعی</th>
+                    <th>درصد تحقق</th>
+                    <th>ماه</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for d in dashboard_data %}
+                    <tr>
+                        <td>{{ d.indicator.code }}</td>
+                        <td>{{ d.indicator.name }}</td>
+                        <td>{{ d.indicator.get_unit_display }}</td>
+                        <td>{{ d.target|default:"—" }}</td>
+                        <td>{{ d.latest_value|default:"—" }}</td>
+                        <td>
+                            {% if d.percent %}
+                                {% if d.percent >= 100 %}
+                                    <span class="badge bg-success">{{ d.percent }}%</span>
+                                {% elif d.percent >= 80 %}
+                                    <span class="badge bg-warning text-dark">{{ d.percent }}%</span>
+                                {% else %}
+                                    <span class="badge bg-danger">{{ d.percent }}%</span>
+                                {% endif %}
+                            {% else %}
+                                <span class="text-muted">—</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if d.month %}
+                                {{ month_map|get_item:d.month }}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="7" class="text-muted">هیچ شاخصی یافت نشد.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

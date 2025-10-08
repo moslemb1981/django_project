@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>لیست ارزیابی‌ها</h2>
+<ul>
+{% for ev in evaluations %}
+  <li>{{ ev.user.username }} - {{ ev.score }}</li>
+{% endfor %}
+</ul>
+{% endblock %}

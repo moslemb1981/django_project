@@ -1,0 +1,91 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>سیستم ارزیابی عملکرد</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- ✅ Bootstrap از مسیر محلی -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: "IRANSans", sans-serif;
+        }
+        .navbar {
+            margin-bottom: 20px;
+        }
+        .container {
+            max-width: 1100px;
+        }
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #888;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- 🔹 نوار بالا -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'dashboard' %}">🏠 سیستم ارزیابی عملکرد</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+
+                    <!-- لینک ورود اطلاعات ماهانه -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'indicators:monthly_data' %}">📊 ورود اطلاعات ماهانه</a>
+                    </li>
+
+                    {% if user.is_superuser %}
+                    <!-- فقط برای ادمین نمایش داده می‌شود -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/indicators/activemonth/">🗓️ مدیریت ماه فعال</a>
+                    </li>
+                    {% endif %}
+
+                </ul>
+
+                <!-- وضعیت کاربر -->
+                <ul class="navbar-nav">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <span class="navbar-text text-light me-3">
+                                👤 {{ user.username }}
+                            </span>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'logout' %}">خروج</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">ورود</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 🔹 محتوای اصلی -->
+    <div class="container bg-white shadow-sm p-4 rounded">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <footer>
+        <p>© {{ now|date:"Y" }} سیستم ارزیابی عملکرد | نسخه توسعه</p>
+    </footer>
+
+    <!-- ✅ Bootstrap JS از مسیر محلی -->
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+  <h2 class="text-center mb-4">📊 سیستم ارزیابی عملکرد</h2>
+
+  <div class="card shadow p-4 mb-4">
+    <h5 class="mb-3">روند امتیازات اخیر</h5>
+    <div style="height: 400px;">
+      <canvas id="performanceChart"></canvas>
+    </div>
+  </div>
+
+  <div class="text-center mt-4">
+    <p>به سیستم خوش آمدید. از منوی بالا برای مدیریت کاربران و ارزیابی‌ها استفاده کنید.</p>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const ctx = document.getElementById('performanceChart').getContext('2d');
+
+  // جلوگیری از چندبار ساختن نمودار
+  if (window.performanceChartInstance) {
+    window.performanceChartInstance.destroy();
+  }
+
+  window.performanceChartInstance = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: {{ labels|safe }},
+      datasets: [{
+        label: 'امتیاز کارمندان',
+        data: {{ scores|safe }},
+        borderColor: 'rgba(75, 192, 192, 1)',
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        borderWidth: 2,
+        tension: 0.3,
+        fill: true
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+</script>
+{% endblock %}
